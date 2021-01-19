@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE urlrewrite
+        PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
+        "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
+
+<urlrewrite use-query-string="true">
+
+    <!--<rule>
+        <note>新车置换（带参数）</note>
+        <from>^/zhihuan-s(\d*)-r(\d{4}-\d{1,2}-\d{1,2})-m(\d+)-c(\d+)$</from>
+        <to>/car/carReplace/index?styleId=$1&amp;regDate=$2&amp;mileage=$3&amp;cityId=$4</to>
+    </rule>-->
+</urlrewrite>

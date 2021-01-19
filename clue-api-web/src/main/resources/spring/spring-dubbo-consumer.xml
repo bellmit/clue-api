@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd  
+            http://code.alibabatech.com/schema/dubbo  
+            http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!-- 消费者应用名称 -->
+    <dubbo:application name="${dubbo.application.name}"/>
+    <!-- Zookeeper注册中心 -->
+    <dubbo:registry address="${dubbo.registry.address}"/>
+    <!--<dubbo:registry address="zookeeper://192.168.0.128:2181"/>-->
+
+    <dubbo:reference id="clueManagService" interface="com.jzg.clue.service.api.ClueManagService" timeout="60000" check="false" version="1.0.0"/>
+    <dubbo:reference id="clueStatusService" interface="com.jzg.clue.service.api.ClueStatusService" check="false" version="1.0.0"/>
+    <!--渠道管理接口-->
+    <dubbo:reference id="userChannelService" interface="com.jzg.clue.service.api.UserChannelService" check="false" version="1.0.0"/>
+    <dubbo:reference id="receiveLogService" interface="com.jzg.clue.service.api.ReceiveLogService" check="false" version="1.0.0"/>
+    <!--选择车型服务-->
+    <dubbo:reference id="carStyleBaseService" interface="com.jzg.base.composite.service.api.CarStyleBaseService" check="false" version="1.0.3"/>
+    <!--获取推送日志服务-->
+    <dubbo:reference id="pushLogService" interface="com.jzg.clue.service.api.PushLogService"  check="false" version="1.0.0"/>
+    <!--记录短信邮件服务-->
+    <dubbo:reference id="clueSmsEmailService" interface="com.jzg.clue.service.api.ClueSmsEmailService" check="false" version="1.0.0" protocol="dubbo"></dubbo:reference>
+    <!--渠道垃圾号码段服务-->
+    <dubbo:reference id="clueRubbishNumberService" interface="com.jzg.clue.service.api.ClueRubbishNumberService" check="false" version="1.0.0" protocol="dubbo"></dubbo:reference>
+</beans>

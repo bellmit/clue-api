@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+       http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+    http://www.springframework.org/schema/rabbit
+    http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd">
+    <description>rabbitmq 连接服务配置</description>
+    <!-- 连接配置 -->
+    <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" username="${rabbitmq.username}"
+                               password="${rabbitmq.password}" port="${rabbitmq.port}" virtual-host="${rabbitmq.vhost}"/>
+    <rabbit:admin connection-factory="connectionFactory"/>
+
+
+    <!--申明一个消息队列Queue
+    durable:是否持久化
+    exclusive: 仅创建者可以使用的私有队列，断开后自动删除
+    auto_delete: 当所有消费客户端连接断开后，是否自动删除队列-->
+    <rabbit:queue id="test_queue_key" name="test_queue_key" durable="true" auto-delete="false" exclusive="false" />
+
+    <!--交换机定义
+    rabbit:direct-exchange：定义exchange模式为direct，意思就是消息与一个特定的路由键完全匹配，才会转发。
+    rabbit:binding：设置消息queue匹配的key-->
+    <rabbit:direct-exchange name="amqpExchange" durable="true" auto-delete="false" id="amqpExchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="test_queue_key" key="test_queue_key"/>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+
+    <!--监听模式 当有消息到达时会通知监听在对应的队列上的监听对象-->
+    <!--queues：监听的队列，多个的话用逗号（,）分隔-->
+    <!--ref：监听器-->
+    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto">
+        <rabbit:listener queues="test_queue_key" ref="queueListener"/>
+    </rabbit:listener-container>
+</beans>

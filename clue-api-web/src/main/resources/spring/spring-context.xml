@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+      http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+      http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 扫描注解 -->
+    <context:component-scan base-package="com.jzg.clue,com.jzg.framework.cache, com.jzg.framework.exception,com.jzg.framework.log">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- 加载配置文件 -->
+    <context:property-placeholder location="classpath*:*.properties"/>
+
+    <!--dubbo服务消费者-->
+    <import resource="classpath*:spring/spring-dubbo-consumer.xml"/>
+    <!--缓存-->
+    <import resource="classpath:spring/spring-cache.xml"/>
+    <!--消息队列  生产者-->
+    <import resource="classpath:spring/spring-rabbitmq-product.xml"/>
+    <!--消息队列  消费者-->
+    <import resource="classpath:spring/spring-rabbitmq-consume.xml"/>
+
+    <!-- 异常信息 拦截 -->
+    <bean id="exceptionLog" class="com.jzg.framework.exception.ExceptionInterceptorLog"></bean>
+    <aop:config>
+        <aop:pointcut id="exceptionPc" expression="execution(public * com.jzg.clue.api.controller..*Controller.*(..))" />
+        <aop:advisor pointcut-ref="exceptionPc" advice-ref="exceptionLog" />
+    </aop:config>
+
+    <bean id="logTimeInterceptor" class="com.jzg.framework.log.LogTimeInterceptor"></bean>
+    <!--新版车型接口 配置-->
+    <bean id="requestVo" class="com.jzg.thirdparty.vo.carstyle.RequestVo">
+        <constructor-arg name="url" value="${carstyle.api.url}"></constructor-arg>
+        <constructor-arg name="partnerId" value="${carstyle.api.partnerId}"></constructor-arg>
+        <constructor-arg name="key" value="${carstyle.api.key}"></constructor-arg>
+    </bean>
+    <aop:config>
+        <aop:pointcut id="exceptionPc" expression="execution(public * com.jzg.clue.api.controller..*Controller.*(..))" />
+        <aop:advisor pointcut-ref="exceptionPc" advice-ref="logTimeInterceptor" />
+    </aop:config>
+
+</beans>
